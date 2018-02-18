@@ -9,7 +9,7 @@ $manifest['description'] = __(
 	'This extension will add menucard in your website. It is suitable for restaurant website.',
 	'fw'
 );
-$manifest['version'] = '1.0.0';
+$manifest['version'] = '1.0.1';
 $manifest['display'] = true;
 $manifest['standalone'] = true;
 

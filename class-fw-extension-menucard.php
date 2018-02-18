@@ -22,6 +22,11 @@ class FW_Extension_MENUCARD extends FW_Extension {
 
 		add_action( 'init', array( $this, '_action_register_post_type' ) );
 		add_action( 'init', array( $this, '_action_register_taxonomy' ) );
+
+		if ( is_admin() ) {
+			$this->add_admin_actions();
+		}
+
 	}
 
 
@@ -34,6 +39,119 @@ class FW_Extension_MENUCARD extends FW_Extension {
 		$this->taxonomy_slug = apply_filters( 'zb_ext_menu_taxonomy_slug', $this->get_db_data( 'permalinks/taxonomy', $this->taxonomy_slug ) );
 	}
 
+
+	private function add_admin_actions() {
+		add_action('admin_init', array($this, '_action_add_permalink_in_settings'));
+		add_action('admin_menu', array($this, '__action_admin_rename_menucard_menu'));
+		add_action('restrict_manage_posts', array($this, '_action_admin_add_menucard_edit_page_filter'));
+
+		add_action('manage_'. $this->post_type . '_posts_custom_column', array($this, '_action_admin_manage_custom_column'), 10, 2);
+	}
+
+
+	/**
+	 * Post listing dropdown filter
+	 *
+	 * @internal
+	 */
+	public function _action_admin_add_menucard_edit_page_filter() {
+		$screen = fw_current_screen_match( array(
+			'only' => array(
+				'base'      => 'edit',
+				'id'        => 'edit-' . $this->post_type,
+				'post_type' => $this->post_type,
+			)
+		) );
+
+		if ( ! $screen ) {
+			return;
+		}
+
+		$terms = get_terms( $this->taxonomy_name );
+
+		if ( empty( $terms ) || is_wp_error( $terms ) ) {
+			echo '<select name="' . $this->get_name() . '-filter-by-menu-category"><option value="0">' . __( 'View all menucard categories',
+					'fw' ) . '</option></select>';
+
+			return;
+		}
+
+		$get = FW_Request::GET( $this->get_name() . '-filter-by-menucard-category' );
+		$id  = ( ! empty( $get ) ) ? (int) $get : 0;
+
+		$dropdown_options = array(
+			'selected'        => $id,
+			'name'            => $this->get_name() . '-filter-by-menucard-category">',
+			'taxonomy'        => $this->taxonomy_name,
+			'show_option_all' => __( 'View all menucard categories', 'fw' ),
+			'hide_empty'      => true,
+			'hierarchical'    => 1,
+			'show_count'      => 0,
+			'orderby'         => 'name',
+		);
+
+		wp_dropdown_categories( $dropdown_options );
+	}
+
+
+
+
+
+	public function __action_admin_rename_menucard_menu(  ) {
+		global $menu;
+
+		foreach ( $menu as $key => $menu_item ) {
+			if ( $menu_item[2] == 'edit.php?post_type=' . $this->post_type ) {
+				$menu[ $key ][0] = __( 'Menucard', 'fw' );
+			}
+		}
+	}
+	
+	
+
+	/**
+	 * Add input field to edit custom post type url dynamically
+	 *
+	 * @internal
+	 */
+	public function _action_add_permalink_in_settings() {
+
+		add_settings_field( 'zb_ext_menucard_menu_slug', __( 'Menucard', 'fw' ), array(
+			$this,
+			'_menucard_menu_slug_input',
+		), 'permalink', 'optional' );
+
+		add_settings_field( 'zb_ext_menucard_category_menu_slug', __( 'Menu Category', 'fw' ), array(
+			$this,
+			'_menucard_menu_category_slug_input',
+		), 'permalink', 'optional' );
+
+	}
+
+
+	/**
+	 * post type permalink
+	 *
+	 * @internal
+	 */
+	public function _menucard_menu_slug_input() {
+		?>
+		<input type="text" name="zb_ext_menucard_menu_slug" value="<?php echo $this->slug; ?>">
+		<code>/vegetarian-barbecue</code>
+		<?php
+	}
+
+	/**
+	 * taxonomy permalink
+	 *
+	 * @internal
+	 */
+	public function _menucard_menu_category_slug_input() {
+		?>
+		<input type="text" name="zb_ext_menucard_category_menu_slug" value="<?php echo $this->taxonomy_slug; ?>">
+		<code>/vegetarian-barbecue</code>
+		<?php
+	}
 
 	/**
 	 * Register Custom Post Type
