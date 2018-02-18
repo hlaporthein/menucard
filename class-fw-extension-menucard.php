@@ -42,8 +42,8 @@ class FW_Extension_MENUCARD extends FW_Extension {
 
 		$post_names = apply_filters( 'fw_ext_menu_post_type_name',
 			array(
-				'singular' => __( 'Menu', 'fw' ),
-				'plural'   => __( 'Menus', 'fw' ),
+				'singular' => __( 'Menucard', 'fw' ),
+				'plural'   => __( 'Menucards', 'fw' ),
 			) );
 
 		register_post_type( $this->post_type,
@@ -116,8 +116,8 @@ class FW_Extension_MENUCARD extends FW_Extension {
 	public function _action_register_taxonomy() {
 
 		$category_names = apply_filters( 'fw_ext_menu_category_name', array(
-			'singular' => __( 'Category', 'fw' ),
-			'plural'   => __( 'Categories', 'fw' ),
+			'singular' => __( 'Menu Category', 'fw' ),
+			'plural'   => __( 'Menu Categories', 'fw' ),
 		) );
 
 		register_taxonomy( $this->taxonomy_name, $this->post_type, array(
