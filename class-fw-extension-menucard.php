@@ -5,7 +5,7 @@
 class FW_Extension_Menucard extends FW_Extension {
 
 	private $post_type         = 'zb-menu';
-	private $slug              = 'menu';
+	private $slug              = 'menucard';
 	private $taxonomy_slug     = 'menu-category';
 	private $taxonomy_name     = 'zb-menu-category';
 	private $taxonomy_tag_name = 'zb-menu-tag';
@@ -85,7 +85,7 @@ class FW_Extension_Menucard extends FW_Extension {
 	public function _action_add_permalink_in_settings() {
 		add_settings_field(
 			'zb_ext_zebra_post_slug_input_name',
-			__( 'Product Menu base', 'fw' ),
+			__( 'Menu Card base', 'fw' ),
 			array( $this, '_post_slug_input_callback' ),
 			'permalink',
 			'optional'
@@ -93,7 +93,7 @@ class FW_Extension_Menucard extends FW_Extension {
 
 		add_settings_field(
 			'zb_ext_zebra_taxonomy_slug_input_name',
-			__( 'Product Menu category base', 'fw' ),
+			__( 'Menu Card category base', 'fw' ),
 			array( $this, '_taxonomy_slug_input_callback' ),
 			'permalink',
 			'optional'
@@ -190,8 +190,8 @@ class FW_Extension_Menucard extends FW_Extension {
 
 		$post_names = apply_filters( 'zb_ext_projects_post_type_name',
 			array(
-				'singular' => __( 'Menu', 'fw' ),
-				'plural'   => __( 'Menu Category', 'fw' )
+				'singular' => __( 'Menu Card', 'fw' ),
+				'plural'   => __( 'Menu Cards', 'fw' )
 			) );
 
 		register_post_type( $this->post_type,
